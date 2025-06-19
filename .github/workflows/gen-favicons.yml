@@ -23,10 +23,8 @@ jobs:
       - name: Generate 64x64 PNGs
         run: |
           mkdir -p output
-          for svg in *.svg; do
-            name=$(basename "$svg" .svg)
-            rsvg-convert -w 64 -h 64 -f png "$svg" -o "output/${name}_64x64.png"
-          done
+          sed 's/#231f20/#e53a5a/Ig' Pions_Logo_Main.svg > Pions_Logo_Pink.svg
+          rsvg-convert -w 64 -h 64 -f png Pions_Logo_Pink.svg -o "output/favicon_64x64.png"
 
       - name: Upload PNGs as artifact
         uses: actions/upload-artifact@v4
