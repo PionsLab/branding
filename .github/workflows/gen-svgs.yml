@@ -1,0 +1,35 @@
+name: Generate Colored Logo Variants
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Pions_Logo_Main.svg'
+      - '.github/workflows/gen-svgs.yml'
+
+jobs:
+  recolor-svg:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate color variants
+        run: |
+          mkdir -p output
+
+          # Pink
+          sed 's/#231f20/#e53a5a/Ig' Pions_Logo_Main.svg > output/Pions_Logo_Pink.svg
+
+          # White
+          sed 's/#231f20/#ffffff/Ig' Pions_Logo_Main.svg > output/Pions_Logo_White.svg
+
+          # Burgunder
+          sed 's/#231f20/#531219/Ig' Pions_Logo_Main.svg > output/Pions_Logo_Burgunder.svg
+
+      - name: Upload SVG variants
+        uses: actions/upload-artifact@v4
+        with:
+          name: pions-colored-logos
+          path: output/
