@@ -1,0 +1,67 @@
+name: Generate PNGs from SVG
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Pions_Logo_Main.svg'
+      - '.github/workflows/generate-pngs.yml'
+
+jobs:
+  build-pngs:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin imagemagick
+
+      - name: Create color variants
+        run: |
+          mkdir -p variants
+          cp Pions_Logo_Main.svg variants/Pions_Logo_Main.svg
+
+          sed 's/#231f20/#e53a5a/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_Pink.svg
+          sed 's/#231f20/#ffffff/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_White.svg
+          sed 's/#231f20/#531219/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_Burgunder.svg
+
+      - name: Convert SVGs to square padded PNGs (512x512)
+        run: |
+          mkdir -p output
+
+          for svg in variants/*.svg; do
+            base=$(basename "$svg" .svg)
+
+            rsvg-convert -w 512 -f png "$svg" | \
+              convert - -gravity center -background none -extent 512x512 "output/${base}.png"
+          done
+
+      - name: Generate 64x64 PNGs
+        run: |
+          mkdir -p favicons
+          rsvg-convert -w 64 -h 64 -f png variants/Pions_Logo_Pink.svg -o "favicons/favicon_64x64.png"
+          convert favicons/favicon_64x64.png favicons/favicon.ico
+
+      - name: Prepare release bundle
+        run: |
+          mkdir -p release
+          cp variants/*.svg release/
+          cp output/*.png release/
+          cp favicons/favicon.ico release/
+          zip -j release/pions-logos.zip release/*
+
+      - name: Upload all release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Logo Release ${{ github.ref_name }}
+          files: |
+            release/pions-logos.zip
+            release/favicon.ico
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
