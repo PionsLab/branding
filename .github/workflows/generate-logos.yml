@@ -56,12 +56,10 @@ jobs:
 
       - name: Upload all release assets
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: Logo Release ${{ github.ref_name }}
-          files: |
-            release/pions-logos.zip
-            release/favicon.ico
+          name: ${{ github.ref_name }}
+          files: release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
