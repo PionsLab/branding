@@ -41,10 +41,18 @@ jobs:
               convert - -gravity center -background none -extent 512x512 "output/${base}.png"
           done
 
-      - name: Generate 64x64 PNGs
+      - name: Generate 64x64 full logo PNG
         run: |
           mkdir -p favicons
-          rsvg-convert -w 64 -h 64 -f png variants/Pions_Logo_Pink.svg -o "favicons/favicon_64x64.png"
+          rsvg-convert -w 64 -h 64 -f png variants/Pions_Logo_Pink.svg -o "favicons/favicon_logo_64x64.png"
+          convert favicons/favicon_logo_64x64.png favicons/favicon_logo.ico
+
+      - name: Generate dot logo PNGs
+        run: |
+          sizes=(32 64 180 192)
+          for s in "${sizes[@]}"; do
+            rsvg-convert -w "$s" -h "$s" -f png favicon.svg -o "favicons/favicon_${s}x${s}.png"
+          done
           convert favicons/favicon_64x64.png favicons/favicon.ico
 
       - name: Prepare release bundle
