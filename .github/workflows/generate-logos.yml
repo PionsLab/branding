@@ -10,7 +10,7 @@ on:
       - '.github/workflows/generate-pngs.yml'
 
 jobs:
-  build-pngs:
+  build-logos:
     runs-on: ubuntu-24.04
 
     steps:
