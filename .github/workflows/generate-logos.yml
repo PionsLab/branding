@@ -1,4 +1,4 @@
-name: Generate PNGs from SVG
+name: Generate Logos
 
 on:
   pull_request:
@@ -60,7 +60,7 @@ jobs:
           mkdir -p release
           cp variants/*.svg release/
           cp output/*.png release/
-          cp favicons/favicon.ico release/
+          cp favicons/* release/
           zip -j release/pions-logos.zip release/*
 
       - name: Upload all release assets
