@@ -72,6 +72,7 @@ jobs:
           cp variants/*.svg release/
           cp output/*.png release/
           cp favicons/* release/
+          cp favicon.svg release/
           zip -j release/pions-logos.zip release/*
 
       - name: Upload all release assets
