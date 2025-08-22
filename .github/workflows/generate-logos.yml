@@ -30,7 +30,7 @@ jobs:
           sed 's/#231f20/#ffffff/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_White.svg
           sed 's/#231f20/#531219/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_Burgunder.svg
 
-      - name: Convert SVGs to square padded PNGs (512x512)
+      - name: Convert SVGs to square padded PNGs (for avatars)
         run: |
           mkdir -p output
 
@@ -38,16 +38,27 @@ jobs:
             base=$(basename "$svg" .svg)
 
             rsvg-convert -w 512 -f png "$svg" | \
-              convert - -gravity center -background none -extent 512x512 "output/${base}.png"
+              convert - -gravity center -background none -extent 512x512 "output/${base}_squared.png"
           done
 
-      - name: Generate 64x64 full logo PNG
+      - name: Convert SVGs to PNGs
+        run: |
+          mkdir -p output
+
+          for svg in variants/*.svg; do
+            base=$(basename "$svg" .svg)
+
+            rsvg-convert -w 512 -f png "$svg" | \
+              convert - -gravity center -background none "output/${base}.png"
+          done
+
+      - name: Generate full logo favicon
         run: |
           mkdir -p favicons
           rsvg-convert -w 64 -h 64 -f png variants/Pions_Logo_Pink.svg -o "favicons/favicon_logo_64x64.png"
           convert favicons/favicon_logo_64x64.png favicons/favicon_logo.ico
 
-      - name: Generate dot logo PNGs
+      - name: Generate dot logo favicons
         run: |
           sizes=(32 64 180 192)
           for s in "${sizes[@]}"; do
