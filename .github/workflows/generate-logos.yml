@@ -26,6 +26,7 @@ jobs:
           cp Pions_Logo_Main.svg variants/Pions_Logo_Main.svg
 
           sed 's/#231f20/#e53a5a/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_Pink.svg
+          sed 's/none/#531219/Ig' variants/Pions_Logo_Pink.svg > variants/Pions_Logo_Pink_BurgunderBackground.svg
           sed 's/#231f20/#ffffff/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_White.svg
           sed 's/#231f20/#531219/Ig' Pions_Logo_Main.svg > variants/Pions_Logo_Burgunder.svg
 
